@@ -2,8 +2,8 @@ provider "aws" {
   region = "us-east-1" # Substitua pela região desejada
 }
 
-resource "aws_s3_bucket" "meu_bucket" {
-  bucket = "meu-bucket-uniquename"  # Substitua pelo nome único do seu bucket
+resource "aws_s3_bucket" "BucketCriptoadsa" {
+  bucket = "BucketCriptoadsa"  
 
   # Configuração do versionamento
   versioning {
@@ -16,6 +16,28 @@ resource "aws_s3_bucket" "meu_bucket" {
       apply_server_side_encryption_by_default {
         sse_algorithm = "AES256"
       }
+    }
+  }
+
+  # Política de ciclo de vida dos objetos
+  lifecycle {
+    prevent_destroy = true  # Evita que o bucket seja destruído acidentalmente
+  }
+
+  # Configuração de ciclo de vida para os objetos no bucket
+  lifecycle_rule {
+    id      = "move-to-glacier-and-expire"
+    enabled = true
+
+    # Transição para o Glacier após 30 dias
+    transition {
+      days          = 30
+      storage_class = "GLACIER"
+    }
+
+    # Expiração após 365 dias
+    expiration {
+      days = 365
     }
   }
 }
