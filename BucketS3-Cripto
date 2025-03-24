@@ -1,0 +1,21 @@
+provider "aws" {
+  region = "us-east-1" # Substitua pela região desejada
+}
+
+resource "aws_s3_bucket" "meu_bucket" {
+  bucket = "meu-bucket-uniquename"  # Substitua pelo nome único do seu bucket
+
+  # Configuração do versionamento
+  versioning {
+    enabled = true
+  }
+
+  # Configuração de criptografia padrão (AES-256)
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
